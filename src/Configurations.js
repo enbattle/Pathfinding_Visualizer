@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 import Maze from "./Maze";
-//import ReactDOM from 'react-dom';
+// import ReactDOM from 'react-dom';
 
 /* 
 	Ask the user for the grid layout and type of pathfinding algorithm
@@ -9,18 +9,20 @@ import Maze from "./Maze";
 		- algorithm type
 */
 class Configuration extends React.Component {
-  constructor(props) {
+	constructor(props) {
 		super(props);
 
+		// Initialize states
 		this.state = {
-			rows: null,
-			columns: null,
+			rows: "",
+			columns: "",
 			algorithm: "BreadthFirstSearch",
 			rowErrorMessage: "",
 			columnErrorMessage: "",
 			setUpMaze: false
 		};
 
+		// Initialize important methods
 		this.handleChange = this.handleChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
@@ -32,7 +34,7 @@ class Configuration extends React.Component {
 
 		// Check that row values are valid
 		if (event.target.name === "rows") {
-			if (event.target.value === "" || event.target.value < 5 || event.target.value > 20) {
+			if (event.target.value === "" || event.target.value < 5 || event.target.value > 15) {
 				this.setState({rows: null});
 				this.setState({rowErrorMessage: "Invalid row value!"});
 				return;
@@ -44,7 +46,7 @@ class Configuration extends React.Component {
 
 		// Check that column values are valid
 		if (event.target.name === "columns") {
-			if (event.target.value === "" || event.target.value < 5 || event.target.value > 20) {
+			if (event.target.value === "" || event.target.value < 5 || event.target.value > 15) {
 				this.setState({columns: null});
 				this.setState({columnErrorMessage: "Invalid column value!"});
 				return;
@@ -96,45 +98,43 @@ class Configuration extends React.Component {
 		const setUpMaze = this.state.setUpMaze;
 
 		return (
-			<div>
-				{/* Ask the user for rows, columns, and algorithm */}
-				<form onSubmit={this.handleSubmit}>
-					{/* Rows */}
-					<div>
-						<label>
-							Number of Rows
-							<input id="rows" name="rows" type="number" value={this.state.rows} onChange={this.handleChange}></input>
-						</label>
-						{rowError && <p className="errorMessage">{rowError}</p>}
-					</div>
-
-					{/* Columns */}
-					<div>
-						<label>
-							Number of Columns
-							<input id="columns" name="columns" type="number" value={this.state.columns} onChange={this.handleChange}></input>
-						</label>
-						{colError && <p className="errorMessage">{colError}</p>}
-					</div>
+			<div className="container-fluid">
+				<div className="sidebar">
+					<h3>Pathfinder Visualizer</h3>
+					<p>Hello, welcome to Pathfinder Visualizer! This application will help you visualize how an entity finds a path in a maze in the presence of walls.</p>
 					
-					{/* Algorithm type */}
-					<div>
-						<label>
-							Type of Algorithm
-							<select id="algorithmChoices" name="algorithm" value={this.state.algorithm} onChange={this.handleChange}>
+					{/* Ask the user for rows, columns, and algorithm */}
+					<form onSubmit={this.handleSubmit}>
+						{/* Rows */}
+						<label htmlFor="rows" className="form-label">Number of Rows</label>
+						<div className="mb-3">
+							<input id="rows" name="rows" className="form-control" type="number" placeholder="Please choose a value between 5 and 15" value={this.state.rows} onChange={this.handleChange}/>
+							{rowError && <p className="error-message">{rowError}</p>}
+						</div>
+
+						{/* Columns */}
+						<label htmlFor="columns" className="form-label">Number of Columns</label>
+						<div className="mb-3">
+							<input id="columns" name="columns" className="form-control" type="number" placeholder="Please choose a value between 5 and 15" value={this.state.columns} onChange={this.handleChange}/>
+							{colError && <p className="error-message">{colError}</p>}
+						</div>
+						
+						{/* Algorithm type */}
+						<label htmlFor="algorithmChoices" className="form-label">Type of Algorithm</label>
+						<div className="mb-3">
+							<select id="algorithmChoices" name="algorithm" className="form-select" aria-label="Algorithm Choices" value={this.state.algorithm} onChange={this.handleChange}>
 								<option value="BreadthFirstSearch">Breadth-first Search</option>
 								<option value="DepthFirstSearch">Depth-first Search</option>
 								<option value="DijkstraAlgorithm">Dijkstra's Algorithm</option>
 								<option value="AStarAlgorithm">A* Algorithm</option>
 							</select>
-						</label>
-					</div>
+						</div>
 
-					<div>
-						<input type="submit" value="Submit"></input>
-					</div>
-				</form>
-
+						<div>
+							<input type="submit" className="btn btn-primary" value="Submit"/>
+						</div>
+					</form>
+				</div>
 				{/* Maze Area */}
 				{setUpMaze && <Maze rows={this.state.rows} columns={this.state.columns} algorithm={this.state.algorithm}/>}
 			</div>

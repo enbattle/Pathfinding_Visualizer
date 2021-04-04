@@ -1,20 +1,124 @@
-.App {
-  text-align: center;
+.sidebar-area {
+  background-color: green;
 }
 
-.App-header {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+.sidebar {
+  border: 5px solid blueviolet;
+  border-radius: 1em 1em 1em 1em;
+  box-shadow: -10px 10px skyblue;
+  margin: 1vw 1vw 1vw 1vw;
+  padding: 1vw 1vw 1vw 1vw;
+  width: 20%;
+  position: fixed;
+  overflow-x: hidden;
 }
 
-.rows, .columns {
-  border: 1px solid black;
-  padding: 1vw;
+.error-message {
+  color: red;
+}
+
+.no-path {
+  color: red;
+}
+
+.board-area {
+  margin-left: 20%;
+}
+
+.columns {
+  border: 5px solid black;
   margin: 0;
+  padding: 0;
+}
+
+.start {
+  background-color: yellow;
+}
+
+.goal {
+  background-color: yellow;
+}
+
+.board-padding {
+  padding: 1.5vw 1.5vw 1.5vw 1.5vw;
+}
+
+.board-fill {
+  animation-name: boardfill;
+  animation-duration: 0.25s; 
+  animation-timing-function: ease-out; 
+  animation-delay: 0;
+  animation-direction: alternate;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+  animation-play-state: running;
+}
+
+.end-path-fill {
+  animation-name: endfill;
+  animation-duration: 0.25s; 
+  animation-timing-function: ease-out; 
+  animation-delay: 0;
+  animation-direction: alternate;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+  animation-play-state: running;
+}
+
+.wall-fill {
+  animation-name: wallfill;
+  animation-duration: 0.25s; 
+  animation-timing-function: ease-out; 
+  animation-delay: 0;
+  animation-direction: alternate;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+  animation-play-state: running;
+}
+
+@keyframes boardfill {
+  0% {
+    transform: scale(.3);
+    background-color: skyblue;
+    border-radius: 100%;
+  }
+  50% {
+    background-color: skyblue;
+  }
+  100% {
+    transform: scale(1);
+    background-color: blue;
+  }
+}
+
+@keyframes endfill {
+  0% {
+    transform: scale(.3);
+    background-color: red;
+    border-radius: 100%;
+  }
+  50% {
+    background-color: orange;
+  }
+  100% {
+    transform: scale(1);
+    background-color:yellow;
+  }
+}
+
+@keyframes wallfill {
+  0% {
+    transform: scale(.3);
+    background-color: darkgray;
+    border-radius: 100%;
+  }
+  50% {
+    background-color: darkgray;
+  }
+  100% {
+    transform: scale(1);
+    background-color:darkgray;
+  }
 }
 
 /*
