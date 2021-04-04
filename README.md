@@ -6,4 +6,4 @@ The algorithms that will be demonstrated thus far will be:
 * Breadth-first Search
 * Depth-first Search
 * Dijkstra's Algorithm
-*A* Search Algorithm
+* A* Search Algorithm
