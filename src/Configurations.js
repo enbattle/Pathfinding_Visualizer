@@ -108,14 +108,14 @@ class Configuration extends React.Component {
 						{/* Rows */}
 						<label htmlFor="rows" className="form-label">Number of Rows</label>
 						<div className="mb-3">
-							<input id="rows" name="rows" className="form-control" type="number" placeholder="Please choose a value between 5 and 15" value={this.state.rows} onChange={this.handleChange}/>
+							<input id="rows" name="rows" className="form-control" type="number" placeholder="Choose between 5 and 15" value={this.state.rows} onChange={this.handleChange}/>
 							{rowError && <p className="error-message">{rowError}</p>}
 						</div>
 
 						{/* Columns */}
 						<label htmlFor="columns" className="form-label">Number of Columns</label>
 						<div className="mb-3">
-							<input id="columns" name="columns" className="form-control" type="number" placeholder="Please choose a value between 5 and 15" value={this.state.columns} onChange={this.handleChange}/>
+							<input id="columns" name="columns" className="form-control" type="number" placeholder="Choose between 5 and 15" value={this.state.columns} onChange={this.handleChange}/>
 							{colError && <p className="error-message">{colError}</p>}
 						</div>
 						
@@ -125,7 +125,7 @@ class Configuration extends React.Component {
 							<select id="algorithmChoices" name="algorithm" className="form-select" aria-label="Algorithm Choices" value={this.state.algorithm} onChange={this.handleChange}>
 								<option value="BreadthFirstSearch">Breadth-first Search</option>
 								<option value="DepthFirstSearch">Depth-first Search</option>
-								<option value="DijkstraAlgorithm">Dijkstra's Algorithm</option>
+								<option value="UniformCostSearch">Uniform-Cost Search</option>
 								<option value="AStarAlgorithm">A* Algorithm</option>
 							</select>
 						</div>

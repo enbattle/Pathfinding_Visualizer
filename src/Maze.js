@@ -1,4 +1,5 @@
 import React from 'react';
+import {PriorityQueueAscend, PriorityQueueDescend} from './structureUtil';
 // import ReactDOM from 'react-dom';
 
 class Maze extends React.Component {
@@ -41,6 +42,7 @@ class Maze extends React.Component {
 		this.handleRun = this.handleRun.bind(this);
 		this.handleReset = this.handleReset.bind(this);
 		this.breadthAndDepthFirstSearch = this.breadthAndDepthFirstSearch.bind(this);
+		this.uniformCostSearch = this.uniformCostSearch.bind(this);
 		this.findChildrenMoves = this.findChildrenMoves.bind(this);
 	}
 
@@ -218,6 +220,7 @@ class Maze extends React.Component {
 						let newPath = JSON.parse(JSON.stringify(parent[1]));
 						newPath.push(parent[0]);
 
+						// Check if breath-first or depth-first
 						if (algoType === "BreadthFirstSearch") {
 							queue.push([children[i], newPath]);
 						}
@@ -258,6 +261,170 @@ class Maze extends React.Component {
 
 					// Add current position to visited
 					visited.add(parent[0].row.toString() + "_" + parent[0].column.toString());
+				}
+			}
+		}
+
+		// If we reach here, it means that there are no possible paths to the goal
+		return null;
+	}
+
+	/* 
+		Uniform-Cost Search Algorithm
+
+			- rows: Integer value of number of rows
+			- columns: Integer value of number of columns
+			- start: Start State as an object with row and column
+			- end: Goal State as an object with row and column
+			- walls: Set containing the wall positions chosen by the user as objects with 
+				properties (row, column)
+	*/
+	uniformCostSearch(rows, columns, start, end, walls) {
+		let queue = new PriorityQueueAscend();
+		let path = [];
+		let visited = new Set();
+		let fillDelay = 100;
+
+		// // If start state is the goal state
+		// if (start.row === end.row && start.column === end.column) {
+		// 	return path;
+		// }
+
+		/*
+			Queue Element Structure
+				Tuple:
+					tuple[0] -> object with a row and column
+					tuple[1] -> path reaching up to that point (an array of positions)
+		*/
+		
+		// Add start state to the queue
+		queue.push([start, path], 0);
+
+		while (!queue.isEmpty()) {
+			// Pop the top of the queue
+			let parent = queue.pop();
+
+			// If we are at the end, return the path
+			// Else, continue adding to the queue, finding children moves, etc
+			if (parent.item[0].row === end.row && parent.item[0].column === end.column) {
+				parent.item[1].push(end);
+
+				let pathCounter = 1;
+
+				// Fill in the goal path at the end
+				for (let i=0; i<parent.item[1].length; i++) {
+					if (i === 0 || i === parent.item[1].length-1) {
+						continue;
+					}
+					else {
+						setTimeout(
+							function() {
+								document.getElementById(parent.item[1][i].row + "_" + parent.item[1][i].column).className += " end-path-fill";
+							},
+							fillDelay
+						);
+
+						// if (parent.item[1][i].direction === "up") {
+						// 	setTimeout(
+						// 		function() {
+						// 			document.getElementById(parent.item[1][i].row + "_" + parent.item[1][i].column).innerText = "^";
+						// 		},
+						// 		fillDelay + ((parent.item[1].length) * 100)
+						// 	)	
+						// }
+						// else if (parent.item[1][i].direction === "down") {
+						// 	setTimeout(
+						// 		function() {
+						// 			document.getElementById(parent.item[1][i].row + "_" + parent.item[1][i].column).innerText = "v";
+						// 		},
+						// 		fillDelay + ((parent.item[1].length) * 100)
+						// 	)	
+						// }
+						// else if (parent.item[1][i].direction === "left") {
+						// 	setTimeout(
+						// 		function() {
+						// 			document.getElementById(parent.item[1][i].row + "_" + parent.item[1][i].column).innerText = "<";
+						// 		},
+						// 		fillDelay + ((parent.item[1].length) * 100)
+						// 	)	
+						// }
+						// else if (parent.item[1][i].direction === "right") {
+						// 	setTimeout(
+						// 		function() {
+						// 			document.getElementById(parent.item[1][i].row + "_" + parent.item[1][i].column).innerText = ">";
+						// 		},
+						// 		fillDelay + ((parent.item[1].length) * 100)
+						// 	)	
+						// }
+						// else {
+						// 	continue;
+						// }
+						fillDelay += 100;
+					}
+				}
+				return parent.item[1];
+			}
+			else {
+				let foundVisited = false;
+				let foundWall = false;
+
+				// Check that the current position is not a wall
+				if (walls.has(parent.item[0].row.toString() + "_" + parent.item[0].column.toString())) {
+					foundWall = true;
+				}
+
+				// Check that the position has not been already visited
+				if (visited.has(parent.item[0].row.toString() + "_" + parent.item[0].column.toString())) {
+					foundVisited = true;
+				}
+			
+				// If current position is a wall or is already visited, continue
+				// Else, find children and add to queue, add curren position to visited
+				if(foundVisited || foundWall) {
+					continue;
+				}
+				else {
+
+					let children = this.findChildrenMoves(rows, columns, parent.item[0]);
+					for (let i=0; i<children.length; i++) {
+						let newPath = JSON.parse(JSON.stringify(parent.item[1]));
+						newPath.push(parent.item[0]);
+
+						queue.push([children[i], newPath], parent.priority + 1);
+
+						let childWall = false;
+						let childVisited = false;
+						let childGoal = false;
+
+						// Check that the child position is not a wall
+						if (walls.has(children[i].row.toString() + "_" + children[i].column.toString())) {
+							childWall = true;
+						}
+		
+						// Check that the child position has not been already visited
+						if (visited.has(children[i].row.toString() + "_" + children[i].column.toString())) {
+							childVisited = true;
+						}
+
+						// Check that the child position is not the goal state
+						if (children[i].row === end.row && children[i].column === end.column) {
+							childGoal = true;
+						}
+
+						// If child position is not a wall, visited, or goal, color it in
+						if (!childWall && !childVisited && !childGoal) {
+							setTimeout(
+								function() {
+									document.getElementById(children[i].row.toString() + "_" + children[i].column.toString()).className += " board-fill";
+								},
+								fillDelay
+							);
+							fillDelay += 100;
+						}
+					}
+
+					// Add current position to visited
+					visited.add(parent.item[0].row.toString() + "_" + parent.item[0].column.toString());
 				}
 			}
 		}
@@ -316,17 +483,14 @@ class Maze extends React.Component {
 			else if (this.props.algorithm === "DepthFirstSearch") {
 				path = this.breadthAndDepthFirstSearch(this.props.rows, this.props.columns, this.state.start, this.state.goal, this.state.walls, "DepthFirstSearch");
 			}
-			else if (this.props.algorithm === "DijkstraAlgorithm") {
-				/*
-					TODO: THIS IS DOING BREADTH FIRST SEARCH
-				*/
-				let path = this.breadthFirstSearch(this.props.rows, this.props.columns, this.state.start, this.state.goal, this.state.walls);
+			else if (this.props.algorithm === "UniformCostSearch") {
+				path = this.uniformCostSearch(this.props.rows, this.props.columns, this.state.start, this.state.goal, this.state.walls);
 			}
 			else if (this.props.algorithm === "AStarAlgorithm") {
 				/*
 					TODO: THIS IS DOING BREADTH FIRST SEARCH
 				*/
-				let path = this.breadthFirstSearch(this.props.rows, this.props.columns, this.state.start, this.state.goal, this.state.walls);
+				path = this.breadthAndDepthFirstSearch(this.props.rows, this.props.columns, this.state.start, this.state.goal, this.state.walls, "BreadthFirstSearch");
 			}
 
 			if (path === null) {
